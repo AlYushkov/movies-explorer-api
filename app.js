@@ -66,7 +66,7 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.get('/signuot', logout);
+app.get('/signout', logout);
 
 app.use('/users', userRouter);
 
