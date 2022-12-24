@@ -61,10 +61,11 @@ module.exports.getMe = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next) => {
+  const myId = req.user._id;
   User.findOne({ email: req.body.email })
   // eslint-disable-next-line consistent-return
     .then((user) => {
-      if (user) {
+      if ((`${user._id}`) !== myId) {
         return Promise.reject(new AppError(appErrors.conflict));
       }
     })
