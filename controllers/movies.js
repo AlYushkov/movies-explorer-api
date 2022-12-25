@@ -61,7 +61,7 @@ module.exports.deleteMovie = (req, res, next) => {
     .then((movie) => {
       if (!movie) {
         return Promise.reject(new AppError(appErrors.notFound));
-      } if (String(movie.owner) !== req.user._id) {
+      } if (`${movie.owner}` !== req.user._id) {
         return Promise.reject(new AppError(appErrors.forbidden));
       }
     })
