@@ -65,7 +65,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findOne({ email: req.body.email })
   // eslint-disable-next-line consistent-return
     .then((user) => {
-      if ((`${user._id}`) !== myId) {
+      if (user && (`${user._id}`) !== myId) {
         return Promise.reject(new AppError(appErrors.conflict));
       }
     })
