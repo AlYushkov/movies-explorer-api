@@ -21,9 +21,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3002 } = process.env;
 
-const userRouter = require('./routes/users');
-
-const movieRouter = require('./routes/movies');
+const appRouter = require('./routes/index');
 
 const { createUser, login, logout } = require('./controllers/users');
 
@@ -68,9 +66,7 @@ app.post('/signup', celebrate({
 
 app.get('/signout', logout);
 
-app.use('/users', userRouter);
-
-app.use('/movies', movieRouter);
+app.use('/', appRouter);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
