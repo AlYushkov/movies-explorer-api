@@ -19,7 +19,9 @@ const helmet = require('helmet'); // secure Express apps by setting various HTTP
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3002 } = process.env;
+require('dotenv').config();
+
+const { PORT, MONGO_DB_NAME, HOST } = process.env;
 
 const appRouter = require('./routes/index');
 
@@ -63,6 +65,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://127.0.0.1:27017/moviesdb');
+
+mongoose.connect(`mongodb://${HOST}/${MONGO_DB_NAME}`);
 
 app.listen(PORT);
