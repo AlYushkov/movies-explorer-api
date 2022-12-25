@@ -6,5 +6,5 @@
 
 ## Адрес
 
-IP 51.250.92.10
-Backend <https://api.mesta.students.nomoredomains.club>
+IP 51.250.12.19
+Backend <https://api.mymov.nomoredomains.club>

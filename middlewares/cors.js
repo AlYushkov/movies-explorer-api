@@ -1,9 +1,10 @@
 const ALLOWED_CORS = ['http://localhost:3000',
-  'https://mesta.students.nomoredomains.club',
-  'https://www.mesta.students.nomoredomains.club',
-  'http://mesta.students.nomoredomains.club',
-  'http://www.mesta.students.nomoredomains.club',
-  'https://github.com/AlYushkov/react-mesto-api-full',
+  'https://mymovie.nomoredomains.club.nomoredomains.club',
+  'https://www.mymovie.nomoredomains.club.nomoredomains.club',
+  'http://mmymovie.nomoredomains.club',
+  'http://www.mymovie.nomoredomains.club',
+  'https://github.com/AlYushkov/movies-explorer-api/tree/level-1',
+  'https://github.com/AlYushkov/movies-explorer-api/tree/main',
 ];
 const ALLOWED_METHODS = ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'];
 
