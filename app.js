@@ -9,7 +9,7 @@ const limiter = rateLimit({
   max: 100,
 });
 
-const { celebrate, Joi, errors } = require('celebrate'); // function that wraps the joi validation library
+const { errors } = require('celebrate'); // function that wraps the joi validation library
 
 const cookieParser = require('cookie-parser'); // Parse Cookie header and populate req.cookies
 
@@ -22,8 +22,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { PORT = 3002 } = process.env;
 
 const appRouter = require('./routes/index');
-
-const { createUser, login, logout } = require('./controllers/users');
 
 const { AppError, appErrors } = require('./utils/app-error');
 
@@ -49,30 +47,7 @@ app.use(requestLogger);
 
 app.use(limiter);
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-  }),
-}), login);
-
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).default('Кинолюбитель'),
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-  }),
-}), createUser);
-
-app.get('/signout', logout);
-
 app.use('/', appRouter);
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
 
 app.use(errorLogger);
 
