@@ -14,23 +14,23 @@ movieRouter.get('/', auth, getMovies);
 
 movieRouter.post('/', auth, celebrate({
   body: Joi.object().keys({
-    country: Joi.string().min(2).max(255),
-    director: Joi.string().min(2).max(255),
-    duration: Joi.number(),
-    year: Joi.string().min(4).max(4),
-    description: Joi.string().min(2).max(255),
-    image: Joi.string().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
-    trailerLink: Joi.string().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
-    thumbnail: Joi.string().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
-    movieId: Joi.string().hex(),
-    nameRU: Joi.string().min(2).max(255).regex(/^([а-яёА-ЯёЁ0-9,.!?;:()\-&#] ?)+$/),
-    nameEN: Joi.string().min(2).max(255).regex(/^([a-zA-Z0-9,.!?;:()\-&#] ?)+$/),
+    country: Joi.string().required(),
+    director: Joi.string().required(),
+    duration: Joi.number().required(),
+    year: Joi.string().required(),
+    description: Joi.string().required(),
+    image: Joi.string().required().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
+    trailerLink: Joi.string().required().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
+    thumbnail: Joi.string().required().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
+    movieId: Joi.string().required().length(24).pattern(/^[0-9]+$/),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
   }),
 }), createMovie);
 
-movieRouter.delete('/:movieId', auth, celebrate({
+movieRouter.delete('/:_id', auth, celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().hex(),
+    _id: Joi.string().hex(),
   }),
 }), deleteMovie);
 

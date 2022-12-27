@@ -2,8 +2,6 @@ const Movie = require('../models/movie');
 
 const { AppError, appErrors } = require('../utils/app-error');
 
-// getMovies, createMovie, deleteMovie
-
 module.exports.createMovie = (req, res, next) => {
   const {
     country, director, duration, year, description, image, trailerLink, nameRU,
@@ -23,12 +21,12 @@ module.exports.createMovie = (req, res, next) => {
     movieId,
     owner: req.user._id,
   })
-    // eslint-disable-next-line consistent-return
     .then((movie) => {
       if (!movie) {
         return Promise.reject(new AppError(appErrors.serverError));
       }
       res.send({ data: movie });
+      return true;
     })
     .catch((e) => {
       let err;
@@ -55,24 +53,24 @@ module.exports.getMovies = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
-  Movie.findById(movieId)
-  // eslint-disable-next-line consistent-return
+  const { _id } = req.params;
+  Movie.findById(_id)
     .then((movie) => {
       if (!movie) {
         return Promise.reject(new AppError(appErrors.notFound));
       } if (`${movie.owner}` !== req.user._id) {
         return Promise.reject(new AppError(appErrors.forbidden));
       }
+      return true;
     })
     .then(() => {
-      Movie.findByIdAndRemove(movieId)
-      // eslint-disable-next-line consistent-return
+      Movie.findByIdAndRemove(_id)
         .then((movie) => {
           if (!movie) {
             return Promise.reject(new AppError(appErrors.serverError));
           }
           res.send({ data: movie });
+          return true;
         })
         .catch((e) => {
           next(e);

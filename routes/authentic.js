@@ -9,15 +9,15 @@ const { createUser, login, logout } = require('../controllers/users');
 authRouter.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), login);
 
 authRouter.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).default('Кинолюбитель'),
+    name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), createUser);
 

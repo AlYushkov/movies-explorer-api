@@ -20,15 +20,13 @@ const schema = new Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
     select: false,
   },
   name: {
     type: String,
-    required: false,
+    required: true,
     minlength: 2,
     maxlength: 30,
-    default: 'Кинолюбитель',
   },
 });
 

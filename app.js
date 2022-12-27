@@ -21,21 +21,37 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 require('dotenv').config();
 
-const { PORT, MONGO_DB_NAME, HOST } = process.env;
+const {
+  NODE_ENV, PORT, MONGO_DB_NAME, HOST,
+} = process.env;
+
+const { DEV_MONGO_DB_NAME, DEV_PORT, DEV_HOST } = require('./utils/dev-params');
+
+let host;
+let port;
+let dbName;
+
+if (NODE_ENV === 'production') {
+  host = HOST;
+  port = PORT;
+  dbName = MONGO_DB_NAME;
+} else {
+  host = DEV_HOST;
+  port = DEV_PORT;
+  dbName = DEV_MONGO_DB_NAME;
+}
 
 const appRouter = require('./routes/index');
-
-const { AppError, appErrors } = require('./utils/app-error');
 
 const { cors } = require('./middlewares/cors');
 
 const { errorHandle } = require('./middlewares/errorHandle');
 
+const { notFound } = require('./middlewares/notFound');
+
 const app = express();
 
-app.use((req, res, next) => {
-  cors(req, res, next);
-});
+app.use(cors);
 
 app.use(helmet());
 
@@ -51,21 +67,16 @@ app.use(limiter);
 
 app.use('/', appRouter);
 
-app.use(errorLogger);
+app.use(notFound);
 
-app.use((req, res, next) => {
-  const err = new AppError(appErrors.notFound);
-  next(err);
-});
+app.use(errorLogger);
 
 app.use(errors());
 
-app.use((error, req, res, next) => {
-  errorHandle(error, req, res, next);
-});
+app.use(errorHandle);
 
 mongoose.set('strictQuery', true);
 
-mongoose.connect(`mongodb://${HOST}/${MONGO_DB_NAME}`);
+mongoose.connect(`mongodb://${host}/${dbName}`);
 
-app.listen(PORT);
+app.listen(port);

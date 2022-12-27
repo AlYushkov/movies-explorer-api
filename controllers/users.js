@@ -6,7 +6,9 @@ const User = require('../models/user');
 
 require('dotenv').config();
 
-const { NODE_ENV, JWT_SECRET, DEV_JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+const { DEV_JWT_SECRET } = require('../utils/dev-params');
 
 const { AppError, appErrors } = require('../utils/app-error');
 
@@ -14,12 +16,9 @@ module.exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
       name: req.body.name,
-      about: req.body.about,
-      avatar: req.body.avatar,
       email: req.body.email,
       password: hash,
     }))
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       if (!user) {
         return Promise.reject(new AppError(appErrors.serverError));
@@ -27,11 +26,10 @@ module.exports.createUser = (req, res, next) => {
       res.send({
         data: {
           name: user.name,
-          about: user.about,
-          avatar: user.avatar,
           email: user.email,
         },
       });
+      return true;
     })
     .catch((e) => {
       let err;
@@ -50,7 +48,6 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.getMe = (req, res, next) => {
   User.findById(req.user)
-    // eslint-disable-next-line consistent-return
     .then((user) => {
       res.send({ data: user });
     })
@@ -63,11 +60,11 @@ module.exports.getMe = (req, res, next) => {
 module.exports.updateUser = (req, res, next) => {
   const myId = req.user._id;
   User.findOne({ email: req.body.email })
-  // eslint-disable-next-line consistent-return
     .then((user) => {
       if (user && (`${user._id}`) !== myId) {
         return Promise.reject(new AppError(appErrors.conflict));
       }
+      return true;
     })
     .then(() => {
       User.findByIdAndUpdate(
@@ -79,12 +76,12 @@ module.exports.updateUser = (req, res, next) => {
           upsert: false,
         },
       )
-        // eslint-disable-next-line consistent-return
         .then((user) => {
           if (!user) {
             return Promise.reject(new AppError(appErrors.serverError));
           }
           res.send({ data: user });
+          return true;
         })
         .catch((e) => {
           let err;
@@ -108,13 +105,14 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : DEV_JWT_SECRET, { expiresIn: '7d' });
+      const userData = { email: user.email, name: user.name };
       res
         .cookie('jwt', token, {
           maxAge: 7 * 24 * 60 * 60 * 1000,
           httpOnly: true,
           sameSite: true,
         })
-        .send({ data: user });
+        .send({ data: userData });
     })
     .catch((e) => {
       let err;
