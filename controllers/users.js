@@ -128,7 +128,3 @@ module.exports.login = (req, res, next) => {
 module.exports.logout = (req, res) => {
   res.clearCookie('jwt').json({ message: 'До встречи!' });
 };
-
-module.exports.verifyAccess = (req, res) => {
-  res.send({ data: req.user });
-};
