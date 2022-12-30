@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 const validator = require('validator');
 
-const { AppError, appErrors } = require('../utils/app-error');
+const NotAuthorizedError = require('../errors/NotAuthorizedError');
 
 const schema = new Schema({
   email: {
@@ -34,12 +34,12 @@ schema.statics.findUserByCredentials = function VerifyUser(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new AppError(appErrors.notAuthorized));
+        return Promise.reject(new NotAuthorizedError());
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new AppError(appErrors.notAuthorized));
+            return Promise.reject(new NotAuthorizedError());
           }
           return user;
         });

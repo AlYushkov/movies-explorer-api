@@ -2,13 +2,6 @@ const express = require('express');
 
 const bodyParser = require('body-parser'); // Parse incoming request bodies
 
-const rateLimit = require('express-rate-limit'); // Use to limit repeated requests to public APIs
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
-
 const { errors } = require('celebrate'); // function that wraps the joi validation library
 
 const cookieParser = require('cookie-parser'); // Parse Cookie header and populate req.cookies
@@ -16,6 +9,8 @@ const cookieParser = require('cookie-parser'); // Parse Cookie header and popula
 const mongoose = require('mongoose');
 
 const helmet = require('helmet'); // secure Express apps by setting various HTTP headers
+
+const { limiter } = require('./utils/requests-limit'); // Use to limit repeated requests to public API
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -47,7 +42,7 @@ const { cors } = require('./middlewares/cors');
 
 const { errorHandle } = require('./middlewares/errorHandle');
 
-const { notFound } = require('./middlewares/notFound');
+const notFound = require('./routes/notFound');
 
 const app = express();
 

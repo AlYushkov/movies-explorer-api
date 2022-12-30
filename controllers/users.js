@@ -10,7 +10,10 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 const { DEV_JWT_SECRET } = require('../utils/dev-params');
 
-const { AppError, appErrors } = require('../utils/app-error');
+const ConflictError = require('../errors/ConflictError');
+const NotFoundError = require('../errors/NotFoundError');
+const ValidatiuonError = require('../errors/ValidationError');
+const ServerError = require('../errors/ServerError');
 
 module.exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
@@ -21,7 +24,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => {
       if (!user) {
-        return Promise.reject(new AppError(appErrors.serverError));
+        return Promise.reject(new ServerError());
       }
       res.send({
         data: {
@@ -34,13 +37,13 @@ module.exports.createUser = (req, res, next) => {
     .catch((e) => {
       let err;
       if (e.code === 11000) {
-        err = new AppError(appErrors.conflict);
+        err = new ConflictError();
       } else if (e.name === 'ValidationError') {
-        err = new AppError(appErrors.badRequest);
+        err = new ValidatiuonError();
       } else if (e.statusCode) {
         err = e;
       } else {
-        err = new AppError(appErrors.serverError);
+        err = new ServerError();
       }
       next(err);
     });
@@ -49,10 +52,14 @@ module.exports.createUser = (req, res, next) => {
 module.exports.getMe = (req, res, next) => {
   User.findById(req.user)
     .then((user) => {
+      if (!user) {
+        next(new NotFoundError());
+        return;
+      }
       res.send({ data: user });
     })
     .catch(() => {
-      const err = new AppError(appErrors.serverError);
+      const err = new ServerError();
       next(err);
     });
 };
@@ -62,7 +69,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (user && (`${user._id}`) !== myId) {
-        return Promise.reject(new AppError(appErrors.conflict));
+        return Promise.reject(new ConflictError());
       }
       return true;
     })
@@ -78,7 +85,7 @@ module.exports.updateUser = (req, res, next) => {
       )
         .then((user) => {
           if (!user) {
-            return Promise.reject(new AppError(appErrors.serverError));
+            return Promise.reject(new ServerError());
           }
           res.send({ data: user });
           return true;
@@ -88,9 +95,9 @@ module.exports.updateUser = (req, res, next) => {
           if (e.statusCode) {
             err = e;
           } else if (e.name === 'ValidationError') {
-            err = new AppError(appErrors.badRequest);
+            err = new ValidatiuonError();
           } else {
-            err = new AppError(appErrors.serverError);
+            err = new ServerError();
           }
           next(err);
         });
@@ -119,7 +126,7 @@ module.exports.login = (req, res, next) => {
       if (e.statusCode) {
         err = e;
       } else {
-        err = new AppError(appErrors.serverError);
+        err = new ServerError();
       }
       next(err);
     });

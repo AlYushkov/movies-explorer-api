@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { AppError, appErrors } = require('../utils/app-error');
+
+const NotAuthorizedError = require('../errors/NotAuthorizedError');
 
 require('dotenv').config();
 
@@ -13,7 +14,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : DEV_JWT_SECRET);
   } catch (e) {
-    const err = new AppError(appErrors.notAuthorized);
+    const err = new NotAuthorizedError();
     next(err);
     return;
   }

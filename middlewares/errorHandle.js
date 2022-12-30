@@ -1,7 +1,18 @@
+const ServerError = require('../errors/ServerError');
+
 const errorHandle = (error, req, res, next) => {
   if (res.headersSent !== true) {
-    const errMessage = error.statusCode ? error.message : 'Ошибка на серверe';
-    res.status(error.statusCode || 500).send({ message: errMessage });
+    let errMessage;
+    let statusCode;
+    if (error.statusCode) {
+      statusCode = error.statusCode;
+      errMessage = error.message;
+    } else {
+      const err = new ServerError();
+      statusCode = err.statusCode;
+      errMessage = err.message;
+    }
+    res.status(statusCode).send({ message: errMessage });
   }
   next();
 };
