@@ -10,7 +10,7 @@ const celebrateNewMovie = celebrate({
     image: Joi.string().required().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
     trailerLink: Joi.string().required().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
     thumbnail: Joi.string().required().regex(/^(https|http)?:\/\/[A-Za-z0-9-_~:@/!/$&'()*+,;=?#[].]*([/]*.*\/?)$/),
-    movieId: Joi.string().required().pattern(/^[0-9]+$/),
+    movieId: Joi.number().integer().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),

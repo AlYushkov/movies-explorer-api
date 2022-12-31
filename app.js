@@ -42,8 +42,6 @@ const { cors } = require('./middlewares/cors');
 
 const { errorHandle } = require('./middlewares/errorHandle');
 
-const notFound = require('./routes/notFound');
-
 const app = express();
 
 app.use(cors);
@@ -61,8 +59,6 @@ app.use(requestLogger);
 app.use(limiter);
 
 app.use('/', appRouter);
-
-app.use(notFound);
 
 app.use(errorLogger);
 

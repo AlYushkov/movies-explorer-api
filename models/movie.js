@@ -59,7 +59,10 @@ const movieSchema = new Schema({
     required: true,
   },
   movieId: {
-    type: String,
+    type: Number,
+    validate: {
+      validator: Number.isInteger,
+    },
     required: true,
   },
   nameRU: {
