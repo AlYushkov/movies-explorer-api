@@ -1,0 +1,7 @@
+const DEV_JWT_SECRET = 'eb28135ebcfc17578f96d4d65b6c7871f2c803be4180c165061d5c2db621c51b';
+const DEV_MONGO_DB_NAME = 'bitfilmsdb';
+const DEV_PORT = 3000;
+const DEV_HOST = '127.0.0.1:27017';
+module.exports = {
+  DEV_JWT_SECRET, DEV_MONGO_DB_NAME, DEV_PORT, DEV_HOST,
+};
